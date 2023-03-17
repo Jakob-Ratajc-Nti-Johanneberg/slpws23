@@ -1,0 +1,17 @@
+h1 All Ads
+
+- if @ads.empty?
+  p Sorry, no ads are available. Please check again later.
+- else
+  table
+    thead
+      tr
+        th Title
+        th Description
+        th Price
+    tbody
+      - @ads.each do |ad|
+        tr
+          td = ad['title']
+          td = ad['description']
+          td = ad['price']
