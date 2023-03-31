@@ -25,28 +25,8 @@ get '/signup' do
 slim :signup
 end
 
-post '/signup' do
-username = params[:username]
-password = params[:password]
-password_confirmation = params[:password_confirmation]
-
-# Kolla om lösenorden matchar
-if password == password_confirmation
-  # Kryptera lösenordet
-  password_digest = BCrypt::Password.create(password)
-
-  # Lägg till användaren i databasen
-  db.execute("INSERT INTO users (username, password_digest) VALUES (?, ?)", [username, password_digest])
-
-  # Redirect to login page after successful signup
-  redirect '/login'
-else
-  slim :signup
-end
-end
-
 get '/login' do
-slim :login
+  slim :login
 end
 
 post '/login' do
@@ -56,14 +36,40 @@ post '/login' do
   # Hämta användaren från databasen
   user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
 
-  # Kolla om lösenordet stämmer
+  # Kolla om användaren finns och om lösenordet stämmer
   if user && BCrypt::Password.new(user["password_digest"]) == password
     # Spara användar-ID i sessionen
     session[:user_id] = user["id"]
 
     redirect '/ads'
   else
-    redirect '/ads'
+    # Felaktigt användarnamn eller lösenord
+    slim :login, locals: { error: "Felaktigt användarnamn eller lösenord." }
+  end
+end
+
+# Signup
+
+post '/signup' do
+  username = params[:username]
+  password = params[:password]
+  password_confirmation = params[:password_confirmation]
+
+  # Kolla om användarnamnet redan finns i databasen
+  if db.execute("SELECT * FROM users WHERE username = ?", [username]).any?
+    # Visar en popup och skickar tillbaka användaren till signup-sidan
+    erb :signup, locals: { error: "Användarnamnet är upptaget. Välj ett annat användarnamn." }
+  # Kolla om lösenorden matchar
+  elsif password == password_confirmation
+    # Kryptera lösenordet
+    password_digest = BCrypt::Password.create(password)
+
+    # Lägg till användaren i databasen
+    db.execute("INSERT INTO users (username, password_digest) VALUES (?, ?)", [username, password_digest])
+
+    redirect '/login'
+  else
+    slim :signup, locals: { error: "Lösenorden matchar inte." }
   end
 end
 
@@ -83,10 +89,45 @@ get '/ads' do
   slim :ads
 end
 
+post '/ads' do
+  # Kolla om användaren är inloggad
+  if session[:user_id]
+    # Hämta data från formuläret
+    title = params[:title]
+    description = params[:description]
+    price = params[:price]
+
+    # Lägg till annonsen i databasen
+    user_id = session[:user_id]
+    db.execute("INSERT INTO ads (title, description, price, user_id) VALUES (?, ?, ?, ?)", [title, description, price, user_id])
+
+    # Redirect till /ads
+    redirect '/ads'
+  else
+    redirect '/login'
+  end
+end
+
+
 get '/ads/new' do
   # Kolla om användaren är inloggad
   if session[:user_id]
     slim :new_ad
+  else
+    redirect '/'
+  end
+end
+
+post '/ads/new' do
+  title = params[:title]
+  description = params[:description]
+  price = params[:price]
+
+  # Kolla om användaren är inloggad
+  if session[:user_id]
+    user_id = session[:user_id]
+    db.execute("INSERT INTO ads (title, description, price, user_id) VALUES (?, ?, ?, ?)", [title, description, price, user_id])
+    redirect '/ads'
   else
     redirect '/'
   end

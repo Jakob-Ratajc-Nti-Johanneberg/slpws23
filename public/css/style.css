@@ -1,0 +1,47 @@
+/* Annonser */
+.ads {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  #main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
+  .ad {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    padding: 20px;
+    width: calc(30% - 40px);
+  }
+  
+  .ad-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .ad-description {
+    margin-bottom: 10px;
+  }
+  
+  .ad-price {
+    color: #0074c2;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .ad-user {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .ad-date {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  

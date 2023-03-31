@@ -1,17 +1,29 @@
-h1 All Ads
+head
+  meta charset="UTF-8"
+  title Blocket Clone
+  link rel="stylesheet" href="/css/style.css"
 
-- if @ads.empty?
-  p Sorry, no ads are available. Please check again later.
-- else
-  table
-    thead
-      tr
-        th Title
-        th Description
-        th Price
-    tbody
-      - @ads.each do |ad|
-        tr
-          td = ad['title']
-          td = ad['description']
-          td = ad['price']
+body
+  #header
+    h1 Blocket Clone
+    - if session[:user_id]
+      a href="/logout" Logga ut
+    - else
+      a href="/login" Logga in
+      a href="/signup" Skapa konto
+
+  #main
+    - @ads.each do |ad|
+      .ad
+        h2 = ad["title"]
+        p = ad["description"]
+        p Pris: #{ad["price"]} kr
+        - if ad["user_id"] == session[:user_id]
+          a href="/ads/#{ad["id"]}/edit" Redigera
+          form action="/ads/#{ad["id"]}/delete" method="post"
+            input type="submit" value="Radera"
+        br
+        br
+
+    - if session[:user_id]
+      a href="/ads/new" Skapa annons

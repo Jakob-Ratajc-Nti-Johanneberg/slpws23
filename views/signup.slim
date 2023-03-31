@@ -1,9 +1,13 @@
-  h1 Sign Up
-  form action="/signup" method="POST"
-    label for="username" Username:
-    input type="text" id="username" name="username" required
-    label for="password" Password:
-    input type="password" id="password" name="password" required
-    label for="password_confirmation" Confirm Password:
-    input type="password" id="password_confirmation" name="password_confirmation" required
-    button type="submit" Sign Up
+h1 Skapa ett konto
+
+form action="/signup" method="post"
+  label Användarnamn
+  input type="text" name="username"
+
+  label Lösenord
+  input type="password" name="password"
+
+  label Bekräfta lösenord
+  input type="password" name="password_confirmation"
+
+  input type="submit" value="Skapa konto"
