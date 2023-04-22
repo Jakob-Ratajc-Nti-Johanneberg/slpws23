@@ -19,11 +19,11 @@ body
         p = ad["description"]
         p Pris: #{ad["price"]} kr
         - if ad["user_id"] == session[:user_id]
-          a href="/ads/#{ad["id"]}/edit" Redigera
+          a href="#" class="edit-ad" data-id="#{ad["id"]}" Redigera
           form action="/ads/#{ad["id"]}/delete" method="post"
             input type="submit" value="Radera"
         br
         br
 
     - if session[:user_id]
-      a href="/ads/new" Skapa annons
+      a href="#" id="new-ad-btn" Skapa annons
