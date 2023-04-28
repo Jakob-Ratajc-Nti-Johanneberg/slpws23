@@ -52,16 +52,14 @@ end
 
 
 # ads.rb
-delete '/ads/:id' do
+post '/ads/:id/delete' do
   if session[:user_id]
-    db = SQLite3::Database.new("db/database.db")
     db.execute("DELETE FROM ads WHERE id=?", params[:id])
     redirect '/ads'
   else
     redirect '/login'
   end
 end
-
 
 post '/signup' do
   username = params[:username]
